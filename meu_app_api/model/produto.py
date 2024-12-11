@@ -12,7 +12,7 @@ class Produto(Base):
     id = Column("pk_produto", Integer, primary_key=True)
     nome = Column(String(140), unique=True)
     quantidade = Column(Integer)
-    salario = Column(Float)
+    valor = Column(Float)
     data_insercao = Column(DateTime, default=datetime.now())
 
     # Definição do relacionamento entre o produto e o comentário.
@@ -21,7 +21,7 @@ class Produto(Base):
     # de reconstruir esse relacionamento.
     comentarios = relationship("Comentario")
 
-    def __init__(self, nome:str, quantidade:int, salario:float,
+    def __init__(self, nome:str, quantidade:int, valor:float,
                  data_insercao:Union[DateTime, None] = None):
         """
         Cria um Produto
@@ -29,12 +29,12 @@ class Produto(Base):
         Arguments:
             nome: nome do produto.
             quantidade: quantidade que se espera comprar daquele produto
-            salario: salario esperado para o produto
+            valor: valor esperado para o produto
             data_insercao: data de quando o produto foi inserido à base
         """
         self.nome = nome
         self.quantidade = quantidade
-        self.salario = salario
+        self.valor = valor
 
         # se não for informada, será o data exata da inserção no banco
         if data_insercao:

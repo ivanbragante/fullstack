@@ -13,7 +13,6 @@ info = Info(title="Minha API", version="1.0.0")
 app = OpenAPI(__name__, info=info)
 CORS(app)
 
-#testando commit
 # definindo tags
 home_tag = Tag(name="Documentação", description="Seleção de documentação: Swagger, Redoc ou RapiDoc")
 produto_tag = Tag(name="Produto", description="Adição, visualização e remoção de produtos à base")
@@ -37,7 +36,7 @@ def add_produto(form: ProdutoSchema):
     produto = Produto(
         nome=form.nome,
         quantidade=form.quantidade,
-        salario=form.salario)
+        valor=form.valor)
     logger.debug(f"Adicionando produto de nome: '{produto.nome}'")
     try:
         # criando conexão com a base

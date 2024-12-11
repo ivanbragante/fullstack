@@ -10,7 +10,7 @@ const getList = async () => {
   })
     .then((response) => response.json())
     .then((data) => {
-      data.produtos.forEach(item => insertList(item.nome, item.quantidade, item.salario))
+      data.produtos.forEach(item => insertList(item.nome, item.quantidade, item.valor))
     })
     .catch((error) => {
       console.error('Error:', error);
@@ -34,7 +34,7 @@ const postItem = async (inputProduct, inputQuantity, inputPrice) => {
   const formData = new FormData();
   formData.append('nome', inputProduct);
   formData.append('quantidade', inputQuantity);
-  formData.append('salario', inputPrice);
+  formData.append('valor', inputPrice);
 
   let url = 'http://127.0.0.1:5000/produto';
   fetch(url, {
@@ -103,7 +103,7 @@ const deleteItem = (item) => {
 
 /*
   --------------------------------------------------------------------------------------
-  Função para adicionar um novo item com nome, quantidade e salario 
+  Função para adicionar um novo item com nome, quantidade e valor 
   --------------------------------------------------------------------------------------
 */
 const newItem = () => {
@@ -114,7 +114,7 @@ const newItem = () => {
   if (inputProduct === '') {
     alert("Escreva o nome de um item!");
   } else if (isNaN(inputQuantity) || isNaN(inputPrice)) {
-    alert("Quantidade e salario precisam ser números!");
+    alert("Quantidade e valor precisam ser números!");
   } else {
     insertList(inputProduct, inputQuantity, inputPrice)
     postItem(inputProduct, inputQuantity, inputPrice)

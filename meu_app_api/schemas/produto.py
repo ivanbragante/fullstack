@@ -10,7 +10,7 @@ class ProdutoSchema(BaseModel):
     """
     nome: str = "Banana Prata"
     quantidade: Optional[int] = 12
-    salario: float = 12.50
+    valor: float = 12.50
 
 
 class ProdutoBuscaSchema(BaseModel):
@@ -35,7 +35,7 @@ def apresenta_produtos(produtos: List[Produto]):
         result.append({
             "nome": produto.nome,
             "quantidade": produto.quantidade,
-            "salario": produto.salario,
+            "valor": produto.valor,
         })
 
     return {"produtos": result}
@@ -47,7 +47,7 @@ class ProdutoViewSchema(BaseModel):
     id: int = 1
     nome: str = "Banana Prata"
     quantidade: Optional[int] = 12
-    salario: float = 12.50
+    valor: float = 12.50
     total_cometarios: int = 1
     comentarios:List[ComentarioSchema]
 
@@ -67,7 +67,7 @@ def apresenta_produto(produto: Produto):
         "id": produto.id,
         "nome": produto.nome,
         "quantidade": produto.quantidade,
-        "salario": produto.salario,
+        "valor": produto.valor,
         "total_cometarios": len(produto.comentarios),
         "comentarios": [{"texto": c.texto} for c in produto.comentarios]
     }
