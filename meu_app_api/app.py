@@ -4,7 +4,7 @@ from urllib.parse import unquote
 
 from sqlalchemy.exc import IntegrityError
 
-from model import Session, Produto, Comentario
+from model import Session, Funcionario, Comentario
 from logger import logger
 from schemas import *
 from flask_cors import CORS
@@ -15,8 +15,8 @@ CORS(app)
 
 # definindo tags
 home_tag = Tag(name="Documentação", description="Seleção de documentação: Swagger, Redoc ou RapiDoc")
-produto_tag = Tag(name="Produto", description="Adição, visualização e remoção de produtos à base")
-comentario_tag = Tag(name="Comentario", description="Adição de um comentário à um produtos cadastrado na base")
+funcionario_tag = Tag(name="Funcionario", description="Adição, visualização e remoção de funcionarios à base")
+comentario_tag = Tag(name="Comentario", description="Adição de um comentário à um funcionarios cadastrado na base")
 
 
 @app.get('/', tags=[home_tag])
@@ -26,145 +26,145 @@ def home():
     return redirect('/openapi')
 
 
-@app.post('/produto', tags=[produto_tag],
-          responses={"200": ProdutoViewSchema, "409": ErrorSchema, "400": ErrorSchema})
-def add_produto(form: ProdutoSchema):
-    """Adiciona um novo Produto à base de dados
+@app.post('/funcionario', tags=[funcionario_tag],
+          responses={"200": FuncionarioViewSchema, "409": ErrorSchema, "400": ErrorSchema})
+def add_funcionario(form: FuncionarioSchema):
+    """Adiciona um novo Funcionario à base de dados
 
-    Retorna uma representação dos produtos e comentários associados.
+    Retorna uma representação dos funcionarios e comentários associados.
     """
-    produto = Produto(
+    funcionario = Funcionario(
         nome=form.nome,
         quantidade=form.quantidade,
         valor=form.valor)
-    logger.debug(f"Adicionando produto de nome: '{produto.nome}'")
+    logger.debug(f"Adicionando funcionario de nome: '{funcionario.nome}'")
     try:
         # criando conexão com a base
         session = Session()
-        # adicionando produto
-        session.add(produto)
+        # adicionando funcionario
+        session.add(funcionario)
         # efetivando o camando de adição de novo item na tabela
         session.commit()
-        logger.debug(f"Adicionado produto de nome: '{produto.nome}'")
-        return apresenta_produto(produto), 200
+        logger.debug(f"Adicionado funcionario de nome: '{funcionario.nome}'")
+        return apresenta_funcionario(funcionario), 200
 
     except IntegrityError as e:
         # como a duplicidade do nome é a provável razão do IntegrityError
-        error_msg = "Produto de mesmo nome já salvo na base :/"
-        logger.warning(f"Erro ao adicionar produto '{produto.nome}', {error_msg}")
+        error_msg = "Funcionario de mesmo nome já salvo na base :/"
+        logger.warning(f"Erro ao adicionar funcionario '{funcionario.nome}', {error_msg}")
         return {"mesage": error_msg}, 409
 
     except Exception as e:
         # caso um erro fora do previsto
         error_msg = "Não foi possível salvar novo item :/"
-        logger.warning(f"Erro ao adicionar produto '{produto.nome}', {error_msg}")
+        logger.warning(f"Erro ao adicionar funcionario '{funcionario.nome}', {error_msg}")
         return {"mesage": error_msg}, 400
 
 
-@app.get('/produtos', tags=[produto_tag],
-         responses={"200": ListagemProdutosSchema, "404": ErrorSchema})
-def get_produtos():
-    """Faz a busca por todos os Produto cadastrados
+@app.get('/funcionarios', tags=[funcionario_tag],
+         responses={"200": ListagemFuncionariosSchema, "404": ErrorSchema})
+def get_funcionarios():
+    """Faz a busca por todos os Funcionario cadastrados
 
-    Retorna uma representação da listagem de produtos.
+    Retorna uma representação da listagem de funcionarios.
     """
-    logger.debug(f"Coletando produtos ")
+    logger.debug(f"Coletando funcionarios ")
     # criando conexão com a base
     session = Session()
     # fazendo a busca
-    produtos = session.query(Produto).all()
+    funcionarios = session.query(Funcionario).all()
 
-    if not produtos:
-        # se não há produtos cadastrados
-        return {"produtos": []}, 200
+    if not funcionarios:
+        # se não há funcionarios cadastrados
+        return {"funcionarios": []}, 200
     else:
-        logger.debug(f"%d rodutos econtrados" % len(produtos))
-        # retorna a representação de produto
-        print(produtos)
-        return apresenta_produtos(produtos), 200
+        logger.debug(f"%d rodutos econtrados" % len(funcionarios))
+        # retorna a representação de funcionario
+        print(funcionarios)
+        return apresenta_funcionarios(funcionarios), 200
 
 
-@app.get('/produto', tags=[produto_tag],
-         responses={"200": ProdutoViewSchema, "404": ErrorSchema})
-def get_produto(query: ProdutoBuscaSchema):
-    """Faz a busca por um Produto a partir do id do produto
+@app.get('/funcionario', tags=[funcionario_tag],
+         responses={"200": FuncionarioViewSchema, "404": ErrorSchema})
+def get_funcionario(query: FuncionarioBuscaSchema):
+    """Faz a busca por um Funcionario a partir do id do funcionario
 
-    Retorna uma representação dos produtos e comentários associados.
+    Retorna uma representação dos funcionarios e comentários associados.
     """
-    produto_nome = query.nome
-    logger.debug(f"Coletando dados sobre produto #{produto_nome}")
+    funcionario_nome = query.nome
+    logger.debug(f"Coletando dados sobre funcionario #{funcionario_nome}")
     # criando conexão com a base
     session = Session()
     # fazendo a busca
-    produto = session.query(Produto).filter(Produto.nome == produto_nome).first()
+    funcionario = session.query(Funcionario).filter(Funcionario.nome == funcionario_nome).first()
 
-    if not produto:
-        # se o produto não foi encontrado
-        error_msg = "Produto não encontrado na base :/"
-        logger.warning(f"Erro ao buscar produto '{produto_nome}', {error_msg}")
+    if not funcionario:
+        # se o funcionario não foi encontrado
+        error_msg = "Funcionario não encontrado na base :/"
+        logger.warning(f"Erro ao buscar funcionario '{funcionario_nome}', {error_msg}")
         return {"mesage": error_msg}, 404
     else:
-        logger.debug(f"Produto econtrado: '{produto.nome}'")
-        # retorna a representação de produto
-        return apresenta_produto(produto), 200
+        logger.debug(f"Funcionario econtrado: '{funcionario.nome}'")
+        # retorna a representação de funcionario
+        return apresenta_funcionario(funcionario), 200
 
 
-@app.delete('/produto', tags=[produto_tag],
-            responses={"200": ProdutoDelSchema, "404": ErrorSchema})
-def del_produto(query: ProdutoBuscaSchema):
-    """Deleta um Produto a partir do nome de produto informado
+@app.delete('/funcionario', tags=[funcionario_tag],
+            responses={"200": FuncionarioDelSchema, "404": ErrorSchema})
+def del_funcionario(query: FuncionarioBuscaSchema):
+    """Deleta um Funcionario a partir do nome de funcionario informado
 
     Retorna uma mensagem de confirmação da remoção.
     """
-    produto_nome = unquote(unquote(query.nome))
-    print(produto_nome)
-    logger.debug(f"Deletando dados sobre produto #{produto_nome}")
+    funcionario_nome = unquote(unquote(query.nome))
+    print(funcionario_nome)
+    logger.debug(f"Deletando dados sobre funcionario #{funcionario_nome}")
     # criando conexão com a base
     session = Session()
     # fazendo a remoção
-    count = session.query(Produto).filter(Produto.nome == produto_nome).delete()
+    count = session.query(Funcionario).filter(Funcionario.nome == funcionario_nome).delete()
     session.commit()
 
     if count:
         # retorna a representação da mensagem de confirmação
-        logger.debug(f"Deletado produto #{produto_nome}")
-        return {"mesage": "Produto removido", "id": produto_nome}
+        logger.debug(f"Deletado funcionario #{funcionario_nome}")
+        return {"mesage": "Funcionario removido", "id": funcionario_nome}
     else:
-        # se o produto não foi encontrado
-        error_msg = "Produto não encontrado na base :/"
-        logger.warning(f"Erro ao deletar produto #'{produto_nome}', {error_msg}")
+        # se o funcionario não foi encontrado
+        error_msg = "Funcionario não encontrado na base :/"
+        logger.warning(f"Erro ao deletar funcionario #'{funcionario_nome}', {error_msg}")
         return {"mesage": error_msg}, 404
 
 
 @app.post('/cometario', tags=[comentario_tag],
-          responses={"200": ProdutoViewSchema, "404": ErrorSchema})
+          responses={"200": FuncionarioViewSchema, "404": ErrorSchema})
 def add_comentario(form: ComentarioSchema):
-    """Adiciona de um novo comentário à um produtos cadastrado na base identificado pelo id
+    """Adiciona de um novo comentário à um funcionarios cadastrado na base identificado pelo id
 
-    Retorna uma representação dos produtos e comentários associados.
+    Retorna uma representação dos funcionarios e comentários associados.
     """
-    produto_id  = form.produto_id
-    logger.debug(f"Adicionando comentários ao produto #{produto_id}")
+    funcionario_id  = form.funcionario_id
+    logger.debug(f"Adicionando comentários ao funcionario #{funcionario_id}")
     # criando conexão com a base
     session = Session()
-    # fazendo a busca pelo produto
-    produto = session.query(Produto).filter(Produto.id == produto_id).first()
+    # fazendo a busca pelo funcionario
+    funcionario = session.query(Funcionario).filter(Funcionario.id == funcionario_id).first()
 
-    if not produto:
-        # se produto não encontrado
-        error_msg = "Produto não encontrado na base :/"
-        logger.warning(f"Erro ao adicionar comentário ao produto '{produto_id}', {error_msg}")
+    if not funcionario:
+        # se funcionario não encontrado
+        error_msg = "Funcionario não encontrado na base :/"
+        logger.warning(f"Erro ao adicionar comentário ao funcionario '{funcionario_id}', {error_msg}")
         return {"mesage": error_msg}, 404
 
     # criando o comentário
     texto = form.texto
     comentario = Comentario(texto)
 
-    # adicionando o comentário ao produto
-    produto.adiciona_comentario(comentario)
+    # adicionando o comentário ao funcionario
+    funcionario.adiciona_comentario(comentario)
     session.commit()
 
-    logger.debug(f"Adicionado comentário ao produto #{produto_id}")
+    logger.debug(f"Adicionado comentário ao funcionario #{funcionario_id}")
 
-    # retorna a representação de produto
-    return apresenta_produto(produto), 200
+    # retorna a representação de funcionario
+    return apresenta_funcionario(funcionario), 200

@@ -4,13 +4,13 @@
   --------------------------------------------------------------------------------------
 */
 const getList = async () => {
-  let url = 'http://127.0.0.1:5000/produtos';
+  let url = 'http://127.0.0.1:5000/funcionarios';
   fetch(url, {
     method: 'get',
   })
     .then((response) => response.json())
     .then((data) => {
-      data.produtos.forEach(item => insertList(item.nome, item.quantidade, item.valor))
+      data.funcionarios.forEach(item => insertList(item.nome, item.quantidade, item.valor))
     })
     .catch((error) => {
       console.error('Error:', error);
@@ -36,7 +36,7 @@ const postItem = async (inputProduct, inputQuantity, inputPrice) => {
   formData.append('quantidade', inputQuantity);
   formData.append('valor', inputPrice);
 
-  let url = 'http://127.0.0.1:5000/produto';
+  let url = 'http://127.0.0.1:5000/funcionario';
   fetch(url, {
     method: 'post',
     body: formData
@@ -91,7 +91,7 @@ const removeElement = () => {
 */
 const deleteItem = (item) => {
   console.log(item)
-  let url = 'http://127.0.0.1:5000/produto?nome=' + item;
+  let url = 'http://127.0.0.1:5000/funcionario?nome=' + item;
   fetch(url, {
     method: 'delete'
   })

@@ -12,11 +12,11 @@ class Comentario(Base):
     texto = Column(String(4000))
     data_insercao = Column(DateTime, default=datetime.now())
 
-    # Definição do relacionamento entre o comentário e um produto.
-    # Aqui está sendo definido a coluna 'produto' que vai guardar
-    # a referencia ao produto, a chave estrangeira que relaciona
-    # um produto ao comentário.
-    produto = Column(Integer, ForeignKey("produto.pk_produto"), nullable=False)
+    # Definição do relacionamento entre o comentário e um funcionario.
+    # Aqui está sendo definido a coluna 'funcionario' que vai guardar
+    # a referencia ao funcionario, a chave estrangeira que relaciona
+    # um funcionario ao comentário.
+    funcionario = Column(Integer, ForeignKey("funcionario.pk_funcionario"), nullable=False)
 
     def __init__(self, texto:str, data_insercao:Union[DateTime, None] = None):
         """
