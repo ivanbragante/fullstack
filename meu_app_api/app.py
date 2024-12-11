@@ -13,6 +13,7 @@ info = Info(title="Minha API", version="1.0.0")
 app = OpenAPI(__name__, info=info)
 CORS(app)
 
+#testando commit
 # definindo tags
 home_tag = Tag(name="Documentação", description="Seleção de documentação: Swagger, Redoc ou RapiDoc")
 produto_tag = Tag(name="Produto", description="Adição, visualização e remoção de produtos à base")
