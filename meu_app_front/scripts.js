@@ -10,7 +10,7 @@ const getList = async () => {
   })
     .then((response) => response.json())
     .then((data) => {
-      data.funcionarios.forEach(item => insertList(item.nome, item.quantidade, item.valor))
+      data.funcionarios.forEach(item => insertList(item.nome, item.valor)) //removido a quantidade
     })
     .catch((error) => {
       console.error('Error:', error);
@@ -30,10 +30,10 @@ getList()
   Função para colocar um item na lista do servidor via requisição POST
   --------------------------------------------------------------------------------------
 */
-const postItem = async (inputWorker, inputQuantity, inputPrice) => {
+const postItem = async (inputWorker, inputPrice) => {
   const formData = new FormData();
   formData.append('nome', inputWorker);
-  formData.append('quantidade', inputQuantity);
+  // formData.append('quantidade', inputQuantity);
   formData.append('valor', inputPrice);
 
   let url = 'http://127.0.0.1:5000/funcionario';
@@ -108,16 +108,16 @@ const deleteItem = (item) => {
 */
 const newItem = () => {
   let inputWorker = document.getElementById("newInput").value;
-  let inputQuantity = document.getElementById("newQuantity").value;
+  // let inputQuantity = document.getElementById("newQuantity").value;
   let inputPrice = document.getElementById("newPrice").value;
 
   if (inputWorker === '') {
     alert("Escreva o nome de um item!");
-  } else if (isNaN(inputQuantity) || isNaN(inputPrice)) {
-    alert("Quantidade e valor precisam ser números!");
+  } else if (isNaN(inputPrice)) {
+    alert("Salário precisa em números!");
   } else {
-    insertList(inputWorker, inputQuantity, inputPrice)
-    postItem(inputWorker, inputQuantity, inputPrice)
+    insertList(inputWorker, inputPrice)
+    postItem(inputWorker, inputPrice)
     alert("Item adicionado!")
   }
 }
@@ -127,8 +127,8 @@ const newItem = () => {
   Função para inserir items na lista apresentada
   --------------------------------------------------------------------------------------
 */
-const insertList = (nameWorker, quantity, price) => {
-  var item = [nameWorker, quantity, price]
+const insertList = (nameWorker, price) => {
+  var item = [nameWorker, price]
   var table = document.getElementById('myTable');
   var row = table.insertRow();
 
@@ -138,7 +138,7 @@ const insertList = (nameWorker, quantity, price) => {
   }
   insertButton(row.insertCell(-1))
   document.getElementById("newInput").value = "";
-  document.getElementById("newQuantity").value = "";
+  // document.getElementById("newQuantity").value = "";
   document.getElementById("newPrice").value = "";
 
   removeElement()
