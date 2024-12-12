@@ -16,7 +16,7 @@ CORS(app)
 # definindo tags
 home_tag = Tag(name="Documentação", description="Seleção de documentação: Swagger, Redoc ou RapiDoc")
 funcionario_tag = Tag(name="Funcionario", description="Adição, visualização e remoção de funcionarios à base")
-comentario_tag = Tag(name="Comentario", description="Adição de um comentário à um funcionarios cadastrado na base")
+
 
 
 @app.get('/', tags=[home_tag])
@@ -29,14 +29,14 @@ def home():
 @app.post('/funcionario', tags=[funcionario_tag],
           responses={"200": FuncionarioViewSchema, "409": ErrorSchema, "400": ErrorSchema})
 def add_funcionario(form: FuncionarioSchema):
-    """Adiciona um novo Funcionario à base de dados
+    """Adiciona um novo funcionario à base de dados
 
     Retorna uma representação dos funcionarios e comentários associados.
     """
     funcionario = Funcionario(
         nome=form.nome,
-        quantidade=form.quantidade,
-        valor=form.valor)
+        porcentagem=form.porcentagem,
+        venda=form.venda)
     logger.debug(f"Adicionando funcionario de nome: '{funcionario.nome}'")
     try:
         # criando conexão com a base
@@ -64,7 +64,7 @@ def add_funcionario(form: FuncionarioSchema):
 @app.get('/funcionarios', tags=[funcionario_tag],
          responses={"200": ListagemFuncionariosSchema, "404": ErrorSchema})
 def get_funcionarios():
-    """Faz a busca por todos os Funcionario cadastrados
+    """Faz a busca por todos os funcionarios cadastrados
 
     Retorna uma representação da listagem de funcionarios.
     """
@@ -87,7 +87,7 @@ def get_funcionarios():
 @app.get('/funcionario', tags=[funcionario_tag],
          responses={"200": FuncionarioViewSchema, "404": ErrorSchema})
 def get_funcionario(query: FuncionarioBuscaSchema):
-    """Faz a busca por um Funcionario a partir do id do funcionario
+    """Faz a busca por um funcionario a partir do id do funcionario
 
     Retorna uma representação dos funcionarios e comentários associados.
     """
@@ -135,36 +135,3 @@ def del_funcionario(query: FuncionarioBuscaSchema):
         logger.warning(f"Erro ao deletar funcionario #'{funcionario_nome}', {error_msg}")
         return {"mesage": error_msg}, 404
 
-
-@app.post('/cometario', tags=[comentario_tag],
-          responses={"200": FuncionarioViewSchema, "404": ErrorSchema})
-def add_comentario(form: ComentarioSchema):
-    """Adiciona de um novo comentário à um funcionarios cadastrado na base identificado pelo id
-
-    Retorna uma representação dos funcionarios e comentários associados.
-    """
-    funcionario_id  = form.funcionario_id
-    logger.debug(f"Adicionando comentários ao funcionario #{funcionario_id}")
-    # criando conexão com a base
-    session = Session()
-    # fazendo a busca pelo funcionario
-    funcionario = session.query(Funcionario).filter(Funcionario.id == funcionario_id).first()
-
-    if not funcionario:
-        # se funcionario não encontrado
-        error_msg = "Funcionario não encontrado na base :/"
-        logger.warning(f"Erro ao adicionar comentário ao funcionario '{funcionario_id}', {error_msg}")
-        return {"mesage": error_msg}, 404
-
-    # criando o comentário
-    texto = form.texto
-    comentario = Comentario(texto)
-
-    # adicionando o comentário ao funcionario
-    funcionario.adiciona_comentario(comentario)
-    session.commit()
-
-    logger.debug(f"Adicionado comentário ao funcionario #{funcionario_id}")
-
-    # retorna a representação de funcionario
-    return apresenta_funcionario(funcionario), 200

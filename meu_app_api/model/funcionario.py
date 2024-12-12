@@ -3,45 +3,29 @@ from sqlalchemy.orm import relationship
 from datetime import datetime
 from typing import Union
 
-from  model import Base, Comentario
-
 
 class Funcionario(Base):
     __tablename__ = 'funcionario'
 
     id = Column("pk_funcionario", Integer, primary_key=True)
     nome = Column(String(140), unique=True)
-    quantidade = Column(Integer)
-    valor = Column(Float)
-    data_insercao = Column(DateTime, default=datetime.now())
+    venda = Column(Float)
+    porcentagem = Column(Integer)
+    comissao = Column(Float)
 
-    # Definição do relacionamento entre o funcionario e o comentário.
-    # Essa relação é implicita, não está salva na tabela 'funcionario',
-    # mas aqui estou deixando para SQLAlchemy a responsabilidade
-    # de reconstruir esse relacionamento.
-    comentarios = relationship("Comentario")
 
-    def __init__(self, nome:str, quantidade:int, valor:float,
-                 data_insercao:Union[DateTime, None] = None):
+    def __init__(self, nome:str, porcentagem:int, venda:float, comissao:float):
         """
         Cria um Funcionario
 
         Arguments:
             nome: nome do funcionario.
-            quantidade: quantidade que se espera comprar daquele funcionario
-            valor: valor esperado para o funcionario
+            porcentagem: porcentagem que se espera comprar daquele funcionario
+            venda: venda esperado para o funcionario
             data_insercao: data de quando o funcionario foi inserido à base
         """
         self.nome = nome
-        self.quantidade = quantidade
-        self.valor = valor
-
-        # se não for informada, será o data exata da inserção no banco
-        if data_insercao:
-            self.data_insercao = data_insercao
-
-    def adiciona_comentario(self, comentario:Comentario):
-        """ Adiciona um novo comentário ao Funcionario
-        """
-        self.comentarios.append(comentario)
+        self.porcentagem = porcentagem
+        self.venda = venda
+        self.comissao = comissao
 

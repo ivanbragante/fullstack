@@ -2,15 +2,16 @@ from pydantic import BaseModel
 from typing import Optional, List
 from model.funcionario import Funcionario
 
-from schemas import ComentarioSchema
+# from schemas import ComentarioSchema
 
 
 class FuncionarioSchema(BaseModel):
     """ Define como um novo funcionario a ser inserido deve ser representado
     """
-    nome: str = "Banana Prata"
-    quantidade: Optional[int] = 12
-    valor: float = 12.50
+    nome: str = "Fulano de tal"
+    porcentagem: Optional[int] = 10
+    venda: float = 10000.5
+    comissao: float = 1000.05
 
 
 class FuncionarioBuscaSchema(BaseModel):
@@ -34,22 +35,24 @@ def apresenta_funcionarios(funcionarios: List[Funcionario]):
     for funcionario in funcionarios:
         result.append({
             "nome": funcionario.nome,
-            "quantidade": funcionario.quantidade,
-            "valor": funcionario.valor,
+            "porcentagem": funcionario.porcentagem,
+            "venda": funcionario.venda,
+            "comissao": funcionario.comissao,
         })
 
     return {"funcionarios": result}
 
 
 class FuncionarioViewSchema(BaseModel):
-    """ Define como um funcionario será retornado: funcionario + comentários.
+    """ Define como um funcionario será retornado: funcionario.
     """
     id: int = 1
     nome: str = "Banana Prata"
-    quantidade: Optional[int] = 12
-    valor: float = 12.50
-    total_cometarios: int = 1
-    comentarios:List[ComentarioSchema]
+    porcentagem: Optional[int] = 10
+    venda: float = 10000.5
+    comissao: float = 1000.05
+    
+    # comentarios:List[ComentarioSchema]
 
 
 class FuncionarioDelSchema(BaseModel):
@@ -66,8 +69,8 @@ def apresenta_funcionario(funcionario: Funcionario):
     return {
         "id": funcionario.id,
         "nome": funcionario.nome,
-        "quantidade": funcionario.quantidade,
-        "valor": funcionario.valor,
-        "total_cometarios": len(funcionario.comentarios),
-        "comentarios": [{"texto": c.texto} for c in funcionario.comentarios]
+        "porcentagem": funcionario.porcentagem,
+        "venda": funcionario.venda,
+        "comissao": funcionario.comissao
+    
     }

@@ -10,7 +10,7 @@ const getList = async () => {
   })
     .then((response) => response.json())
     .then((data) => {
-      data.funcionarios.forEach(item => insertList(item.nome, item.valor)) //removido a quantidade
+      data.funcionarios.forEach(item => insertList(item.nome, item.porcentagem, item.venda)) //removido a quantidade
     })
     .catch((error) => {
       console.error('Error:', error);
@@ -30,11 +30,11 @@ getList()
   Função para colocar um item na lista do servidor via requisição POST
   --------------------------------------------------------------------------------------
 */
-const postItem = async (inputWorker, inputPrice) => {
+const postItem = async (inputWorker, inputQuantity, inputPrice) => {
   const formData = new FormData();
   formData.append('nome', inputWorker);
-  // formData.append('quantidade', inputQuantity);
-  formData.append('valor', inputPrice);
+  formData.append('porcentagem', inputQuantity);
+  formData.append('venda', inputPrice);
 
   let url = 'http://127.0.0.1:5000/funcionario';
   fetch(url, {
@@ -69,7 +69,6 @@ const insertButton = (parent) => {
 */
 const removeElement = () => {
   let close = document.getElementsByClassName("close");
-  // var table = document.getElementById('myTable');
   let i;
   for (i = 0; i < close.length; i++) {
     close[i].onclick = function () {
@@ -103,13 +102,13 @@ const deleteItem = (item) => {
 
 /*
   --------------------------------------------------------------------------------------
-  Função para adicionar um novo item com nome, quantidade e valor 
+  Função para adicionar um novo item com nome, porcentagem e venda 
   --------------------------------------------------------------------------------------
 */
 const newItem = () => {
-  let inputWorker = document.getElementById("newInput").value;
-  // let inputQuantity = document.getElementById("newQuantity").value;
-  let inputPrice = document.getElementById("newPrice").value;
+  let inputWorker = document.getElementById("newInput").value; //nome
+  let inputQuantity = document.getElementById("newQuantity").value; //porcentagem
+  let inputPrice = document.getElementById("newPrice").value; //vendas
 
   if (inputWorker === '') {
     alert("Escreva o nome de um item!");

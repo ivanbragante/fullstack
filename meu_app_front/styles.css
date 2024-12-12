@@ -60,7 +60,7 @@ header {
 #newQuantity {
     margin: 0;
     border: 1px solid rgb(35, 32, 24);
-    width: 8%;
+    width: 10%;
     padding: 10px;
     font-size: 16px;
 }
@@ -68,7 +68,7 @@ header {
 #newPrice {
     margin: 0;
     border: 1px solid rgb(35, 32, 24);
-    width: 5%;
+    width: 15%;
     padding: 10px;
     font-size: 16px;
 }
@@ -117,7 +117,7 @@ td {
 
 table{
     background-color: white;
-    width: 50%;
+    width: 59%;
 }
 
 tr:nth-child(odd){
